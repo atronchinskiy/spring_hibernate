@@ -1,6 +1,9 @@
 package hiber.config;
 
+import hiber.dao.UserDaoImp;
 import hiber.model.User;
+import hiber.service.UserServiceImp;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,6 +28,9 @@ public class AppConfig {
    @Autowired
    private Environment env;
 
+   @Autowired
+   private SessionFactory sessionFactory;
+
    @Bean
    public DataSource getDataSource() {
       DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -32,6 +38,13 @@ public class AppConfig {
       dataSource.setUrl(env.getProperty("db.url"));
       dataSource.setUsername(env.getProperty("db.username"));
       dataSource.setPassword(env.getProperty("db.password"));
+/*
+      properties.put(DRIVER, Objects.requireNonNull(env.getProperty("db.driver")));
+      properties.put(URL, Objects.requireNonNull(env.getProperty("db.url")));
+      properties.put(USER, Objects.requireNonNull(env.getProperty("db.username")));
+      properties.put(PASS, Objects.requireNonNull(env.getProperty("mysql.password")));
+*/
+
       return dataSource;
    }
 
@@ -55,4 +68,15 @@ public class AppConfig {
       transactionManager.setSessionFactory(getSessionFactory().getObject());
       return transactionManager;
    }
+
+/*   @Bean
+   public UserDaoImp userDaoImp(){
+      return new UserDaoImp();
+   }
+
+   @Bean
+   public UserServiceImp userServiceImp() {
+      return new UserServiceImp();
+   }
+*/
 }
