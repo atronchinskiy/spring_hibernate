@@ -1,32 +1,34 @@
 package hiber;
 
 import hiber.config.AppConfig;
-import hiber.dao.UserDao;
-import hiber.dao.UserDaoImp;
+import hiber.model.Car;
 import hiber.model.User;
-import hiber.service.ServiceTest;
-import hiber.service.UserServiceImp;
-import org.springframework.beans.factory.annotation.Autowired;
+import hiber.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.Environment;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
+import java.util.Scanner;
 
 public class MainApp {
 
     public static void main(String[] args) throws SQLException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        UserServiceImp userServiceImp = context.getBean("userServiceImp", UserServiceImp.class);
+        UserService userServiceImp = context.getBean("userServiceImp", UserService.class); //УКАЗЫВАЕМ ИНТЕРФЕЙС UserService.class, А НЕ ЕГО РЕАЛИЗАЦИЮ!!!!
 
-        userServiceImp.add(new User("User1", "Lastname1", "user1@mail.ru"));
-        userServiceImp.add(new User("User2", "Lastname2", "user2@mail.ru"));
-        userServiceImp.add(new User("User3", "Lastname3", "user3@mail.ru"));
-        userServiceImp.add(new User("User4", "Lastname4", "user4@mail.ru"));
+        userServiceImp.clearAll();
+
+        User user1 = new User("User1", "Lastname1", "user1@mail.ru");
+        User user2 = new User("User2", "Lastname2", "user2@mail.ru");
+        userServiceImp.add(user1);
+        userServiceImp.add(user2);
+//        userServiceImp.add(new User("User3", "Lastname3", "user3@mail.ru"));
+//        userServiceImp.add(new User("User4", "Lastname4", "user4@mail.ru"));
+
+        Car car1 = new Car("1", 1, user1.getId());
+        Car car2 = new Car("2", 2, user2.getId());
+        userServiceImp.addCar(car1);
+        userServiceImp.addCar(car2);
 
         List<User> users = userServiceImp.listUsers();
         for (User user : users) {
@@ -37,26 +39,29 @@ public class MainApp {
             System.out.println();
         }
 
-        context.close();
-
-        Properties property = new Properties();
-        try (InputStream fis = new FileInputStream("c:\\ProjectJava\\2.2.1. spring_hibernate\\src\\main\\resources\\db.properties")) {
-            property.load(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
+        List<Car> cars = userServiceImp.listCars();
+        for (Car car : cars) {
+            System.out.println("name = " + car.getName());
+            System.out.println("series = " + car.getSeries());
+            System.out.println("userID = " + car.getUserID());
+            System.out.println();
         }
 
-        System.out.println(property.getProperty("db.driver"));
-        System.out.println(property.getProperty("db.url"));
-        System.out.println(property.getProperty("db.username"));
-        System.out.println(property.getProperty("db.password"));
+        int seriesCar;
+        String nameCar;
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.println("введите имя машины: ");
+        nameCar = scanner.nextLine();
+        System.out.println("введите серию машины машины: ");
+        seriesCar = scanner.nextInt();
+        User user = userServiceImp.getUser(nameCar, seriesCar);
+        if (user != null) {
+            System.out.println(user);
+        } else {
+            System.out.println("пользователя с такой машиной не существует");
+        }
 
-        ServiceTest serviceTest = new ServiceTest();
-        User user = new User("a", "ww", "ss");
-        serviceTest.addUser(user);
-        List<User> usersList = serviceTest.getUser(1);
-        System.out.println(usersList.toArray());
-
+        context.close();
     }
 }

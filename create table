@@ -1,0 +1,15 @@
+create table users1
+(
+	id LONG auto_increment,
+	name varchar,
+	last_name varchar,
+	email varchar,
+	constraint users1_pk
+		primary key (id)
+);
+
+create table car
+(
+	name varchar,
+	series int
+);

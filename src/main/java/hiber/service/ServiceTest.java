@@ -35,7 +35,7 @@ public class ServiceTest {
         configuration.addAnnotatedClass(User.class);
 
         Properties property = new Properties();
-        try (InputStream fis = new FileInputStream("c:\\ProjectJava\\2.2.1. spring_hibernate\\src\\main\\resources\\db.properties")){
+        try (InputStream fis = new FileInputStream("c:\\ProjectJava\\2.2.1. spring_hibernate\\src\\main\\resources\\db.properties")) {
             property.load(fis);
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class ServiceTest {
 
     public List<User> getUser(long id) {
         List<User> dataSet = null;
-    try{
+        try {
             Session session = sessionFactory.openSession();
             DaoTest dao = new DaoTest(session);
             dataSet = dao.get(id);
@@ -62,7 +62,8 @@ public class ServiceTest {
         }
         return dataSet;
     }
-    public boolean addUser(User user){
+
+    public boolean addUser(User user) {
         Session session = sessionFactory.openSession();
         DaoTest dao = new DaoTest(session);
         try {

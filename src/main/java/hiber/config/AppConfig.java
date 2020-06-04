@@ -1,8 +1,7 @@
 package hiber.config;
 
-import hiber.dao.UserDaoImp;
+import hiber.model.Car;
 import hiber.model.User;
-import hiber.service.UserServiceImp;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,26 +17,26 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-
 @Configuration
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
-@ComponentScan(value = "hiber")
+@ComponentScan("hiber")
+
 public class AppConfig {
 
-   @Autowired
-   private Environment env;
+    @Autowired
+    private Environment env;
 
-   @Autowired
-   private SessionFactory sessionFactory;
+    @Autowired
+    private SessionFactory sessionFactory;
 
-   @Bean
-   public DataSource getDataSource() {
-      DriverManagerDataSource dataSource = new DriverManagerDataSource();
-      dataSource.setDriverClassName(env.getProperty("db.driver"));
-      dataSource.setUrl(env.getProperty("db.url"));
-      dataSource.setUsername(env.getProperty("db.username"));
-      dataSource.setPassword(env.getProperty("db.password"));
+    @Bean
+    public DataSource getDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getProperty("db.driver"));
+        dataSource.setUrl(env.getProperty("db.url"));
+        dataSource.setUsername(env.getProperty("db.username"));
+        dataSource.setPassword(env.getProperty("db.password"));
 /*
       properties.put(DRIVER, Objects.requireNonNull(env.getProperty("db.driver")));
       properties.put(URL, Objects.requireNonNull(env.getProperty("db.url")));
@@ -45,38 +44,28 @@ public class AppConfig {
       properties.put(PASS, Objects.requireNonNull(env.getProperty("mysql.password")));
 */
 
-      return dataSource;
-   }
+        return dataSource;
+    }
 
-   @Bean
-   public LocalSessionFactoryBean getSessionFactory() {
-      LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-      factoryBean.setDataSource(getDataSource());
-      
-      Properties props=new Properties();
-      props.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-      props.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+    @Bean
+    public LocalSessionFactoryBean getSessionFactory() {
+        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
+        factoryBean.setDataSource(getDataSource());
 
-      factoryBean.setHibernateProperties(props);
-      factoryBean.setAnnotatedClasses(User.class);
-      return factoryBean;
-   }
+        Properties props = new Properties();
+        props.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+        props.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
 
-   @Bean
-   public HibernateTransactionManager getTransactionManager() {
-      HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-      transactionManager.setSessionFactory(getSessionFactory().getObject());
-      return transactionManager;
-   }
+        factoryBean.setHibernateProperties(props);
+        factoryBean.setAnnotatedClasses(User.class, Car.class);
+        return factoryBean;
+    }
 
-/*   @Bean
-   public UserDaoImp userDaoImp(){
-      return new UserDaoImp();
-   }
-
-   @Bean
-   public UserServiceImp userServiceImp() {
-      return new UserServiceImp();
-   }
-*/
+    @Bean
+    public HibernateTransactionManager getTransactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(getSessionFactory().getObject());
+        return transactionManager;
+    }
 }
+

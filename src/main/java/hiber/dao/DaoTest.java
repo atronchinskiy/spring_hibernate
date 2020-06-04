@@ -13,7 +13,7 @@ import java.util.List;
 public class DaoTest {
     private Session session;
 
-    public DaoTest (Session session) {
+    public DaoTest(Session session) {
         this.session = session;
     }
 
@@ -23,7 +23,6 @@ public class DaoTest {
     }
 
     public boolean addUser(User user) throws SQLException {
-//        Session session = session.openSession();
         boolean flag = false;
         Transaction transaction = null;
 
@@ -34,8 +33,8 @@ public class DaoTest {
             }
             transaction.commit();
             flag = true;
-        }catch (HibernateException e) {
-            if(transaction != null) {
+        } catch (HibernateException e) {
+            if (transaction != null) {
                 transaction.rollback();
             }
         } finally {
@@ -47,13 +46,4 @@ public class DaoTest {
             return flag;
         }
     }
-/*
-    public long getUserId(String name) throws HibernateException {
-        Criteria criteria = session.createCriteria(User.class);
-        return ((User) criteria.add(Restrictions.eq("name", name)).uniqueResult()).getId();
-    }
-
-    public long insertUser(String name) throws HibernateException {
-        return 1; //(Long) session.save(new User(name));
-    }*/
 }
