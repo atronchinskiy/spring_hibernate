@@ -21,7 +21,6 @@ import java.util.Properties;
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
 @ComponentScan("hiber")
-
 public class AppConfig {
 
     @Autowired
@@ -33,16 +32,10 @@ public class AppConfig {
     @Bean
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("db.driver"));
         dataSource.setUrl(env.getProperty("db.url"));
         dataSource.setUsername(env.getProperty("db.username"));
         dataSource.setPassword(env.getProperty("db.password"));
-/*
-      properties.put(DRIVER, Objects.requireNonNull(env.getProperty("db.driver")));
-      properties.put(URL, Objects.requireNonNull(env.getProperty("db.url")));
-      properties.put(USER, Objects.requireNonNull(env.getProperty("db.username")));
-      properties.put(PASS, Objects.requireNonNull(env.getProperty("mysql.password")));
-*/
+        dataSource.setDriverClassName(env.getProperty("db.driver"));
 
         return dataSource;
     }
